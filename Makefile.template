@@ -1,0 +1,64 @@
+#This is my very basic (not necessarily clever) template Makefile for combined compilers (e.g. mpiCC + nvcc)
+#Korbinian Huber
+#2014
+
+
+##################################################--SETTINGS--#####################################################
+#Path to home
+PTH = 
+#Path to sources 
+PTS =
+
+#Project name
+NAME = 
+#Compilers (maybe you need 2)
+#Compiler for linking/ compiler for the driver
+CC1 = g++
+#additional compiler
+CC2 = 
+#Compiler flags, e.g. -g, -Wall, etc.
+CC1FLAGS = 
+CC2FLAGS =
+#flags for linking, e.g. -lgsl, -lCCfits, etc.
+LDFLAGS = 
+#Include paths, i.e. where your headers are
+INC = -I/usr/include -I/usr/local/include -I$(PTH)/include
+#Library paths, i.e. where your libraries are (files that end on .so .a, etc.)
+LIB = -L/usr/lib -L/usr/local/lib -L$(PTH)/lib
+#source-file extensions
+#this is the extension that your driver file has
+SE1 = cpp
+#additional extension
+SE2 = 
+#Driver file (where your main() is --duh) without extension
+DRIVER =
+#source files (other stuff you need)
+SRC = 
+
+###################################################--RULES--#####################################################
+#all the source objects
+OBJ = $(SRC:.$(SE1)=.o) $(SRC:.$(SE2)=.o)
+#all the headers
+HEAD = $(SRC:.$(SE1)=.h) $(SRC:.$(SE2)=.h)
+
+
+#You'll want some objects
+%.o: %.$(SE1) %.h
+	$(CC1) $(CC1FLAGS) -c $< $(INC) $(LIB)
+
+%.o: %.$(SE2) %.h
+	$(CC2) $(CC2FLAGS) -c $< $(INC) $(LIB)
+	
+%.o: %.$(SE1) 
+	$(CC1) $(CC1FLAGS) -c $< $(INC) $(LIB)
+
+%.o: %.$(SE2) 
+	$(CC2) $(CC2FLAGS) -c $< $(INC) $(LIB)
+	
+#You'll want an executable
+$(NAME): $(DRIVER:.$(SE1)=.o) $(OBJ) $(HEAD)
+	$(CC1) $(CC1FLAGS) -o $@ $< $(OBJ) $(INC) $(LIB) $(LDFLAGS)
+
+#You'll want o clean everything you created
+clean:
+	rm -f $(NAME) $(OBJ)
