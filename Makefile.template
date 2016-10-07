@@ -37,9 +37,10 @@ SRC =
 
 ###################################################--RULES--#####################################################
 #all the source objects
-OBJ = $(SRC:.$(SE1)=.o) $(SRC:.$(SE2)=.o)
+# OBJ = $(SRC:.$(SE1)=.o) 
+OBJ := $(SRC:*/%.$(SE1)=*/%.o) #$(SRC:*/%.$(SE2)=*/%.o)
 #all the headers
-HEAD = $(SRC:.$(SE1)=.h) $(SRC:.$(SE2)=.h)
+HEAD = $(SRC:.$(SE1)=.h) # $(SRC:.$(SE2)=.h)
 
 
 #You'll want some objects
@@ -56,9 +57,9 @@ HEAD = $(SRC:.$(SE1)=.h) $(SRC:.$(SE2)=.h)
 	$(CC2) $(CC2FLAGS) -c $< $(INC) $(LIB)
 	
 #You'll want an executable
-$(NAME): $(DRIVER:.$(SE1)=.o) $(OBJ) $(HEAD)
+$(NAME): $(DRIVER:.$(SE1)=.o) $(OBJ) #$(HEAD)
 	$(CC1) $(CC1FLAGS) -o $@ $< $(OBJ) $(INC) $(LIB) $(LDFLAGS)
 
 #You'll want o clean everything you created
 clean:
-	rm -f $(NAME) $(OBJ)
+	rm -f *.o
